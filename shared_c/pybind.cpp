@@ -2,7 +2,9 @@
 #include <pybind11/stl.h>
 
 // Reuse existing C++ implementation
-#include "model/supervised/linear_regeression/LinearRegression.cpp"
+#include "../shared_c/model/supervised/linear_regeression/LinearRegression.cpp"
+#include "../shared_c/model/supervised/logistic_regeression/LogisticRegression.cpp"
+
 
 namespace py = pybind11;
 
@@ -28,5 +30,22 @@ PYBIND11_MODULE(shared_c_ext, m) {
             },
             py::arg("X"))
         .def("coefficients", &LinearRegression::coefficeients);
+
+    py::class_<LogisticRegression>(m, "LogisticRegression")
+        .def(py::init<>())
+        .def("fit",
+             [](LogisticRegression& self,
+                const std::vector<std::vector<double>>& X,
+                const std::vector<double>& y,
+                int epochs) {
+                 std::vector<double> y_copy = y;
+                 self.fit(X, y_copy, epochs);
+             },
+             py::arg("X"),
+             py::arg("y"),
+             py::arg("epochs") = 1000)
+        .def("predict",
+             &LogisticRegression::predict,
+             py::arg("x"));
 }
 

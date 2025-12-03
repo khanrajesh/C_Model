@@ -7,6 +7,7 @@
 #include <cmath>
 
 #include "../shared_c/model/supervised/linear_regeression/LinearRegression.cpp"
+#include "../shared_c/model/supervised/logistic_regeression/LogisticRegression.cpp"
 
 namespace fs = std::filesystem;
 using namespace std;
@@ -55,9 +56,9 @@ Dataset load_dataset(const fs::path& csv_path){
 
 
 int main(){
+    path root = path(__FILE__).parent_path().parent_path();
 
-    try{
-        path root = path(__FILE__).parent_path().parent_path();
+    /*try{
         path data_path = root / "data" / "Student_Performance.csv";
 
         cout << "Using dataset: " << data_path.string() << "\n";
@@ -79,7 +80,35 @@ int main(){
     }catch (const exception& ex){
         cout << "Error: " << ex.what() << "\n";
         return 1;
+    }*/
+
+    try{
+        path data_path = root / "data" / "common_logistic_regression.csv";
+
+        cout << "Using dataset: " << data_path.string() << "\n";
+
+        Dataset logistic_ds = load_dataset(data_path);
+
+        //import the Logistic Regression
+        LogisticRegression log_model;
+        cout << "Starting logistic regression training\n";
+        log_model.fit(logistic_ds.X, logistic_ds.y, 1000);
+
+        cout << "\nLogistic regression predictions on training data:\n";
+        for (size_t i = 0; i < logistic_ds.X.size(); ++i) {
+            double prob = log_model.predict(logistic_ds.X[i]);
+            cout << "x=[" << logistic_ds.X[i][0] << "," << logistic_ds.X[i][1]
+                 << "] y=" << logistic_ds.y[i]
+                 << " p(y=1|x)=" << prob << "\n";
+        }
+
+        //import Linear Regeression here
+    }catch(const exception& ex){
+        cout << "Error: " << ex.what() << "\n";
+        return 1;
     }
+
+    
 
     return 0;
 }
