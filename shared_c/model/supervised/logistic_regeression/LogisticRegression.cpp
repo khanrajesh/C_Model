@@ -26,7 +26,7 @@ public:
         if (X.size() == 0 || Y.size()==0) throw invalid_argument("Mismatch training data or labels");
 
 
-        size_t m = X.size();
+        size_t m = X.size(); //no of samples
         size_t feature = X[0].size(); //feature
         size_t n = feature +1; // intercepter + features
 
@@ -40,10 +40,10 @@ public:
         }
 
 
-        vector<vector<double>> w(m,vector<double>(m,0.0));
-        vector<double> e(m,0.0);
-        vector<double> h(m,0.0);
-        vector<double> g(n,0.0);
+        vector<vector<double>> w(m,vector<double>(m,0.0)); //for hessan
+        vector<double> e(m,0.0); //error
+        vector<double> h(m,0.0); //hypo
+        vector<double> g(n,0.0); //gradient
 
 
 
@@ -178,6 +178,7 @@ public:
         double prob = 1.0 / (1.0 + exp(-z));
         return prob;
     }
+
 
 
 private:
